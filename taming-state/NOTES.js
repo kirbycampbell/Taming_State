@@ -37,7 +37,7 @@ function CounterPresenter(props) {
   );
 }
 
-/* EXAMPLE OF PROPER STATE MANAGEMENT::::: */
+/* EXAMPLE OF PROPER STATE MANAGEMENT with Unidirectional Data Flow::::: */
 import React from "react";
 
 class Search extends React.Component {
@@ -72,3 +72,9 @@ class Search extends React.Component {
   }
 }
 /*
+
+Action - a javacsript object which has a type and an optional payload. 
+Executing an action is called dispatching in redux.
+
+Reducer- Actions pass through reducers.  IS A PURE FUNCTION. IN/OUT Operation. Two inputs - state and action.
+    It also always returns a newState Object without mutating the incoming prevState object. 
