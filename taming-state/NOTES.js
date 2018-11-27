@@ -78,3 +78,11 @@ Executing an action is called dispatching in redux.
 
 Reducer- Actions pass through reducers.  IS A PURE FUNCTION. IN/OUT Operation. Two inputs - state and action.
     It also always returns a newState Object without mutating the incoming prevState object. 
+
+Combining React and Redux:: */
+npm install --save redux
+npm install --save react-redux
+import { combineReducers, createStore } from "redux";
+import { Provider } from "react-redux";
+
+/*

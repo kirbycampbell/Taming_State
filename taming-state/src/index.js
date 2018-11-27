@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { combineReducers, createStore } from "redux";
+import { Provider, connect } from "react-redux";
 import "./index.css";
 
 // action types
@@ -13,7 +14,10 @@ const FILTER_SET = "FILTER_SET";
 
 const todos = [
   { id: "0", name: "learn redux" },
-  { id: "1", name: "learn mobx" }
+  { id: "1", name: "learn mobx" },
+  { id: "2", name: "learn angular" },
+  { id: "3", name: "learn react" }
+  //This is essentially the database populating this app.
 ];
 
 function todoReducer(state = todos, action) {
@@ -27,11 +31,13 @@ function todoReducer(state = todos, action) {
     default:
       return state;
   }
+  //Reducer receives state and action, and uses switch case- which calls functions.
 }
 
 function applyAddTodo(state, action) {
   const todo = Object.assign({}, action.todo, { completed: false });
   return state.concat(todo);
+  // Creates a new todo object and adds it to the state, default completed set to false.
 }
 
 function applyToggleTodo(state, action) {
@@ -40,6 +46,7 @@ function applyToggleTodo(state, action) {
       ? Object.assign({}, todo, { completed: !todo.completed })
       : todo
   );
+  // If the state's todo item matches the action todo item then make a new object that sets completed to opposite.
 }
 
 function filterReducer(state = "SHOW_ALL", action) {
@@ -88,22 +95,23 @@ const rootReducer = combineReducers({
 
 const store = createStore(rootReducer);
 
-// Components
+// View Layer Component
 
-function TodoApp({ todos, onToggleTodo }) {
-  return <TodoList todos={todos} onToggleTodo={onToggleTodo} />;
+function TodoApp() {
+  return <ConnectedTodoList />;
 }
 
-function TodoList({ todos, onToggleTodo }) {
+// Components
+
+function TodoList({ todos }) {
   return (
     <div>
       {todos.map(todo => (
-        <TodoItem key={todo.id} todo={todo} onToggleTodo={onToggleTodo} />
+        <ConnectedTodoItem key={todo.id} todo={todo} />
       ))}
     </div>
   );
 }
-
 function TodoItem({ todo, onToggleTodo }) {
   const { name, id, completed } = todo;
   return (
@@ -116,16 +124,29 @@ function TodoItem({ todo, onToggleTodo }) {
   );
 }
 
-// view layer
+// Connecting React and Redux
 
-function TodoApp() {
-  return <div>Todo App</div>;
+function mapStateToProps(state) {
+  return {
+    todos: state.todoState
+  };
+}
+function mapDispatchToProps(dispatch) {
+  return {
+    onToggleTodo: id => dispatch(doToggleTodo(id))
+  };
 }
 
+const ConnectedTodoList = connect(mapStateToProps)(TodoList);
+const ConnectedTodoItem = connect(
+  null,
+  mapDispatchToProps
+)(TodoItem);
+
+// DOM Render tying store and TodoApp together
 ReactDOM.render(
-  <TodoApp
-    todos={store.getState().todoState}
-    onToggleTodo={id => store.dispatch(doToggleTodo(id))}
-  />,
+  <Provider store={store}>
+    <TodoApp />
+  </Provider>,
   document.getElementById("root")
 );
